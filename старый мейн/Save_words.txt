@@ -1,0 +1,12 @@
+Language: 2, Defect: 1, Recognized Text: доктор
+Language: 2, Defect: 1, Recognized Text: авторитета
+Language: 2, Defect: 1, Recognized Text: лет
+Language: 2, Defect: 1, Recognized Text: лет
+Language: 1, Defect: 1, Recognized Text: картоп
+Language: 1, Defect: 1, Recognized Text: арпа
+Language: 1, Defect: 3, Recognized Text: алмұрт
+Language: 1, Defect: 3, Recognized Text: шалбар
+Language: 1, Defect: 3, Recognized Text: қайық
+Language: 1, Defect: 1, Recognized Text: раушан
+Language: 1, Defect: 1, Recognized Text: картоп
+Language: 1, Defect: 1, Recognized Text: арпа

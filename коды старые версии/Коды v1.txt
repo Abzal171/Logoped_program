@@ -1,0 +1,683 @@
+1.
+from vosk import  Model, KaldiRecognizer
+import pyaudio
+
+model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+recognizer = KaldiRecognizer(model, 16000)
+
+mic = pyaudio.PyAudio()
+stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
+stream.start_stream()
+
+while True:
+    data = stream.read(4096)
+    if recognizer.AcceptWaveform(data):
+        text = recognizer.Result()
+        print(text[14:-3])
+
+2.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def main():
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                text = recognizer.Result()
+                print(text[14:-3])
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+3.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def main():
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        with open(r'C:\Users\Public\Downloads\Diplon\Zapis_razpos.txt', 'w', encoding='utf-8') as file:
+            while True:
+                data = stream.read(4096)
+                if recognizer.AcceptWaveform(data):
+                    text = recognizer.Result()
+                    recognized_text = text[14:-3]
+                    print(recognized_text)
+                    file.write(recognized_text + '\n')
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+4.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def main():
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Введите 'запуск', чтобы начать распознавание.")
+        while True:
+            command = input().strip().lower()
+            if command == "запуск":
+                print("Начинается запись и распознавание. Для остановки введите 'остановка'.")
+                break
+
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                text = recognizer.Result()
+                recognized_text = text[14:-3]
+                print(recognized_text)
+                if "остановка" in recognized_text:
+                    print("Распознано триггерное слово 'остановка'. Завершение программы.")
+                    break
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+5.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def main():
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Введите 'запуск', чтобы начать распознавание.")
+        while True:
+            command = input().strip().lower()
+            if command == "запуск":
+                print("Выберите режим:")
+                print("1. Нормальный режим (просто распознавать все слова)")
+                print("2. Режим для картавящих людей (просить произносить слова из файла 'for_kartaviy')")
+                mode = input("Введите номер режима: ")
+                if mode == "1":
+                    print("Начинается запись и распознавание в нормальном режиме.")
+                elif mode == "2":
+                    print("Начинается запись и распознавание в режиме для картавящих людей.")
+                    # Здесь можно добавить обращение к файлу "for_kartaviy"
+                else:
+                    print("Неверный номер режима. Завершение программы.")
+                    break
+                break
+
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                text = recognizer.Result()
+                recognized_text = text[14:-3]
+                print(recognized_text)
+                if "остановка" in recognized_text:
+                    print("Распознано триггерное слово 'остановка'. Завершение программы.")
+                    break
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+6.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def main(): # Инициализация модели и распознавателя
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+
+# Инициализация микрофона
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Введите 'запуск', чтобы начать распознавание.")
+        while True:
+            command = input().strip().lower()
+            if command == "запуск":
+                print("Выберите режим:")
+                print("1. Нормальный режим (просто распознавать все слова)")
+                print("2. Режим для картавящих людей (просить произносить слова из файла 'for_kartaviy')")
+                mode = input("Введите номер режима: ")
+                if mode == "1":
+                    print("Начинается запись и распознавание в нормальном режиме.")
+                elif mode == "2":
+                    print("Начинается запись и распознавание в режиме для картавящих людей.")
+                    # Здесь можно добавить обращение к файлу "for_kartaviy"
+                    with open(r'C:\Users\Public\Downloads\Diplon\lang_problem\for_kartaviy.txt', 'r', encoding='utf-8') as kartaviy_file:
+                        kartaviy_words = kartaviy_file.read().splitlines()
+                        print(f"Произносите слова из файла 'for_kartaviy': {', '.join(kartaviy_words)}")
+                else:
+                    print("Неверный номер режима. Завершение программы.")
+                    break
+                break
+
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                text = recognizer.Result()
+                recognized_text = text[14:-3] # Извлечение распознанного текста
+                print(recognized_text)
+                if "остановка" in recognized_text:
+                    print("Распознано триггерное слово 'остановка'. Завершение программы.")
+                    break
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+7.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def main():
+    # Инициализация модели и распознавателя
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+
+    # Инициализация микрофона
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Введите 'запуск', чтобы начать распознавание.")
+        while True:
+            command = input().strip().lower()
+            if command == "запуск":
+                print("Выберите режим:")
+                print("1. Нормальный режим (просто распознавать все слова)")
+                print("2. Режим для картавящих людей (просить произносить слова из файла 'for_kartaviy')")
+                mode = input("Введите номер режима: ")
+                if mode == "1":
+                    print("Начинается запись и распознавание в нормальном режиме.")
+                elif mode == "2":
+                    print("Начинается запись и распознавание в режиме для картавящих людей.")
+                    # Здесь можно добавить обращение к файлу "for_kartaviy"
+                    with open(r'C:\Users\Public\Downloads\Diplon\lang_problem\for_kartaviy.txt', 'r', encoding='utf-8') as kartaviy_file:
+                        kartaviy_words = kartaviy_file.read().splitlines()
+                        print(f"Произносите слова из файла 'for_kartaviy': {', '.join(kartaviy_words)}")
+                else:
+                    print("Неверный номер режима. Завершение программы.")
+                    break
+                break
+
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                text = recognizer.Result()
+                recognized_text = text[14:-3]  # Извлечение распознанного текста
+                print(recognized_text)
+                if "остановка" in recognized_text:
+                    print("Распознано триггерное слово 'остановка'. Завершение программы.")
+                    break
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+8.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def main():
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    print("Введите 'запуск', чтобы начать распознавание.")
+    while True:
+        command = input().strip().lower()
+        if command == "запуск":
+            print("Выберите режим:")
+            print("1. Нормальный режим (просто распознавать все слова)")
+            print("2. Режим для картавящих людей (просить произносить слова из файла 'for_kartaviy')")
+            mode = input("Введите номер режима: ")
+            if mode == "1":
+                print("Начинается запись и распознавание в нормальном режиме.")
+            elif mode == "2":
+                print("Начинается запись и распознавание в режиме для картавящих людей.")
+                with open(r'C:\Users\Public\Downloads\Diplon\lang_problem\for_kartaviy\for_kartaviy.txt', 'r', encoding='utf-8') as kartaviy_file:
+                    kartaviy_words = kartaviy_file.read().splitlines()
+                    print(f"Произносите слова из файла 'for_kartaviy': {', '.join(kartaviy_words)}")
+            else:
+                print("Неверный номер режима. Завершение программы.")
+                break
+            break
+
+    with open(r'C:\Users\Public\Downloads\Diplon\Zapis_razpos.txt', 'a', encoding='utf-8') as output_file:
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                text = recognizer.Result()
+                recognized_text = text[14:-3]
+                print(recognized_text)
+                output_file.write(recognized_text + '\n')
+                if "остановка" in recognized_text:
+                    break
+
+if __name__ == "__main__":
+    main()
+9.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+import datetime
+
+def main():
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    print("Введите 'запуск', чтобы начать распознавание.")
+    while True:
+        command = input().strip().lower()
+        if command == "запуск":
+            print("Выберите режим:")
+            print("1. Нормальный режим (просто распознавать все слова)")
+            print("2. Режим для картавящих людей (просить произносить слова из файла 'for_kartaviy')")
+            mode = input("Введите номер режима: ")
+            if mode == "1":
+                print("Начинается запись и распознавание в нормальном режиме.")
+            elif mode == "2":
+                print("Начинается запись и распознавание в режиме для картавящих людей.")
+                with open(r'C:\Users\Public\Downloads\Diplon\lang_problem\for_kartaviy\for_kartaviy.txt', 'r', encoding='utf-8') as kartaviy_file:
+                    kartaviy_words = kartaviy_file.read().splitlines()
+                    print(f"Произносите слова из файла 'for_kartaviy': {', '.join(kartaviy_words)}")
+            else:
+                print("Неверный номер режима. Завершение программы.")
+                break
+            break
+
+    with open(r'C:\Users\Public\Downloads\Diplon\Zapis_razpos.txt', 'a', encoding='utf-8') as output_file:
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                text = recognizer.Result()
+                recognized_text = text[14:-3]
+                timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") #дата по году месяцу дню и т.д.
+                output_file.write(f"{recognized_text} ({timestamp})\n") #добавлять дату и в файле
+                print(f"{recognized_text} ({timestamp})")
+                if "остановка" in recognized_text:
+                    break
+
+if __name__ == "__main__":
+    main()
+10.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def read_etalon_words(file_path):
+    with open(file_path, "r", encoding="utf-8") as file:
+        return [word.strip() for word in file.readlines()]
+
+def main():
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Введите 'запуск', чтобы начать распознавание.")
+        while input().strip().lower() != "запуск":
+            pass
+        print("Начинается запись и распознавание. Для остановки введите 'остановка'.")
+
+        etalon_words = read_etalon_words(r'C:\Users\Public\Downloads\Diplon\lang_problem\for_kart\for_kart.txt')
+
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                recognized_text = recognizer.Result()[14:-3]
+                print(f"Распознано: {recognized_text}")
+
+                user_words = recognized_text.split()
+                for word in user_words:
+                    if word not in etalon_words:
+                        print(f"Слово '{word}' не соответствует стандартам. Рекомендация: ...")
+
+                if "остановка" in recognized_text:
+                    print("Распознано триггерное слово 'остановка'. Завершение программы.")
+                    break
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+11.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def read_etalon_words(file_path):
+    with open(file_path, "r", encoding="utf-8") as file:
+        return [word.strip() for word in file.readlines()]
+
+def main():
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Введите 'запуск', чтобы начать распознавание.")
+        while input().strip().lower() != "запуск":
+            pass
+        print("Начинается запись и распознавание. Для остановки введите 'остановка'.")
+
+        etalon_words = read_etalon_words(r'C:\Users\Public\Downloads\Diplon\lang_problem\for_kart\for_kart.txt')
+
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                recognized_text = recognizer.Result()[14:-3]
+
+                user_words = recognized_text.split()
+                for word in user_words:
+                    if word in etalon_words:
+                        print(f"Слово '{word}' успешно разпознано!")
+                    else:
+                        print(f"Не разпознано: '{word}'")
+
+                if "остановка" in recognized_text:
+                    print("Распознано триггерное слово 'остановка'. Завершение программы.")
+                    break
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    except Exception as e:
+        print(f"Ошибка: {e}")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+12.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def read_etalon_words(file_path):
+    with open(file_path, "r", encoding="utf-8") as file:
+        return [word.strip() for word in file.readlines()]
+
+def similar(a, b):
+    # Простой метод сравнения схожести слов (можно заменить на более сложный)
+    return sum([1 for char_a, char_b in zip(a, b) if char_a == char_b]) / max(len(a), len(b))
+
+def main():
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Введите 'запуск', чтобы начать распознавание.")
+        while input().strip().lower() != "запуск":
+            pass
+
+        print("Начинается запись и распознавание. Для остановки введите 'остановка'.")
+
+        # Ask the user if they have a speech impediment
+        print("Вы картавите или шепелявите?")
+        print("1. Картавлю")
+        print("2. Шепелявлю")
+
+        choice = input().strip().lower()
+        if choice == "1":
+            etalon_words = read_etalon_words(r'C:\Users\Public\Downloads\\Diplon\lang_problem\for_kart\for_kart.txt')
+            print("Выбран режим для картавящих,говорите.")
+        elif choice == "2":
+            etalon_words = read_etalon_words(r'C:\Users\Public\Downloads\\Diplon\lang_problem\for_sep\for_sep.txt')
+            print("Выбран режим для шепеляващих,говорите.")
+        else:
+            print("Некорректный выбор. Завершение программы.")
+            return
+
+        similarity_threshold = 0.7  # Пороговое значение для схожести слов
+
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                recognized_text = recognizer.Result()[14:-3]
+                user_words = recognized_text.split()
+
+                for word in user_words:
+                    max_similarity = max([similar(word, etalon_word) for etalon_word in etalon_words])
+                    if max_similarity >= similarity_threshold:
+                        print(f"Слово '{word}' успешно разпознано!")
+                    else:
+                        print(f"Не разпознано: '{word}'")
+
+                if "остановка" in recognized_text:
+                    print("Распознано триггерное слово 'остановка'. Завершение программы.")
+                    break
+
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+13.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def similar(a, b):
+    # Простой метод сравнения схожести слов (можно заменить на более сложный)
+    return sum([1 for char_a, char_b in zip(a, b) if char_a == char_b]) / max(len(a), len(b))
+
+def main():
+    model = Model(r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small')
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Введите 'запуск', чтобы начать распознавание.")
+        while input().strip().lower() != "запуск":
+            pass
+
+        print("Начинается запись и распознавание. Для остановки введите 'остановка'.")
+
+        # Ask the user if they have a speech impediment
+        print("Вы картавите или шепелявите?")
+        print("1. Картавлю")
+        print("2. Шепелявлю")
+
+        choice = input().strip().lower()
+        if choice == "1":
+            etalon_words = ['трактор', 'раритет', 'рюрик']  # Замените на свои эталонные слова для картавящих
+            print("Выбран режим для картавящих, говорите.")
+        elif choice == "2":
+            etalon_words = ['слово4', 'слово5', 'слово6']  # Замените на свои эталонные слова для шепелявых
+            print("Выбран режим для шепелявящих, говорите.")
+        else:
+            print("Некорректный выбор. Завершение программы.")
+            return
+
+        similarity_threshold = 0.7  # Пороговое значение для схожести слов
+
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                recognized_text = recognizer.Result()[14:-3]
+                user_words = recognized_text.split()
+
+                for word in user_words:
+                    max_similarity = max([similar(word, etalon_word) for etalon_word in etalon_words])
+                    if max_similarity >= similarity_threshold:
+                        print(f"Слово '{word}' успешно разпознано!")
+                    else:
+                        print(f"Слово,не похожее на сравниваемыые: '{word}'")
+
+                if "остановка" in recognized_text:
+                    print("Распознано триггерное слово 'остановка'. Завершение программы.")
+                    break
+
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+14.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def similar(a, b):
+    # Простой метод сравнения схожести слов (можно заменить на более сложный)
+    return sum([1 for char_a, char_b in zip(a, b) if char_a == char_b]) / max(len(a), len(b))
+
+def main():
+    print("Каким языком вы говорите?")
+    print("1. Казахский")
+    print("2. Русский")
+    language_choice = input().strip()
+
+    if language_choice == "1":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\kz_small'
+        print("Выбран режим для казахского языка.")
+    elif language_choice == "2":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small'
+        print("Выбран режим для русского языка.")
+    else:
+        print("Некорректный выбор. Завершение программы.")
+        return
+
+    model = Model(model_path)
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Начинается запись и распознавание. Для остановки введите 'остановка'.")
+
+        if language_choice == "1":
+            etalon_words = ['трактор', 'раритет', 'рюрик']
+        elif language_choice == "2":
+            print("Какой дефект речи у вас?")
+            print("1. Картавость")
+            print("2. Шепелявость")
+            speech_defect_choice = input().strip()
+            if speech_defect_choice == "1":
+                etalon_words = ['трактор', 'раритет', 'рюрик']  # Замените на свои эталонные слова для картавящих
+                print("Выбран режим для картавящих, говорите.")
+            elif speech_defect_choice == "2":
+                etalon_words = ['слово4', 'слово5', 'слово6']  # Замените на свои эталонные слова для шепелявых
+                print("Выбран режим для шепелявящих, говорите.")
+            else:
+                print("Некорректный выбор. Завершение программы.")
+                return
+
+        similarity_threshold = 0.7  # Пороговое значение для схожести слов
+
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                recognized_text = recognizer.Result()[14:-3]
+                user_words = recognized_text.split()
+
+                for word in user_words:
+                    max_similarity = max([similar(word, etalon_word) for etalon_word in etalon_words])
+                    if max_similarity >= similarity_threshold:
+                        print(f"Слово '{word}' успешно распознано!")
+                    else:
+                        print(f"Слово, не похожее на сравниваемые: '{word}'")
+
+                if "остановка" in recognized_text:
+                    print("Распознано триггерное слово 'остановка'. Завершение программы.")
+                    break
+
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()

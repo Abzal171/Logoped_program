@@ -1,0 +1,141 @@
+v1:
+from PyQt5 import QtCore, QtGui, QtWidgets
+from logoped_main import main
+
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(693, 442)
+        self.label = QtWidgets.QLabel(Form)
+        self.label.setGeometry(QtCore.QRect(240, 20, 221, 41))
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(Form)
+        self.label_2.setGeometry(QtCore.QRect(0, 0, 701, 451))
+        self.label_2.setText("")
+        self.label_2.setPixmap(QtGui.QPixmap("Images/Fon.jpg"))
+        self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(Form)
+        self.label_3.setGeometry(QtCore.QRect(220, 80, 251, 51))
+        self.label_3.setObjectName("label_3")
+        self.pushButton = QtWidgets.QPushButton(Form)
+        self.pushButton.setGeometry(QtCore.QRect(280, 150, 121, 23))
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton_2 = QtWidgets.QPushButton(Form)
+        self.pushButton_2.setGeometry(QtCore.QRect(280, 180, 121, 23))
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_3 = QtWidgets.QPushButton(Form)
+        self.pushButton_3.setGeometry(QtCore.QRect(280, 210, 121, 41))
+        self.pushButton_3.setCheckable(False)
+        self.pushButton_3.setObjectName("pushButton_3")
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Программа \'Логопед\'"))
+        self.label.setText(_translate("Form",
+                                      "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#000000;\">Программа &quot;Логопед&quot;</span></p></body></html>"))
+        self.label_3.setText(_translate("Form",
+                                        "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Тілді таңдаңыз/Выберите язык:</span></p></body></html>"))
+        self.pushButton.setText(_translate("Form", "Қазақ тілі"))
+        self.pushButton_2.setText(_translate("Form", "Русский язык"))
+        self.pushButton_3.setText(_translate("Form", "Бағдарламадан шығу\n"
+                                                     "Выйти из программы"))
+        switch_to_s3_window = QtCore.pyqtSignal()  # Новый сигнал для открытия окна S3Window
+
+class LanguageSelectionWindow(QtWidgets.QWidget, Ui_Form):
+    start_s3_window = QtCore.pyqtSignal()  # Добавляем сигнал для открытия окна S3
+
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.pushButton.clicked.connect(self.switch_to_kazakh_language)
+        self.pushButton_2.clicked.connect(self.switch_to_russian_language)
+        self.pushButton_3.clicked.connect(self.exit_program.emit)
+
+    def switch_to_kazakh_language(self):
+        print("Switching to Kazakh language")
+        main("1")
+        self.start_s3_window.emit()  # Отправляем сигнал при выборе казахского языка
+
+    def switch_to_russian_language(self):
+        print("Switching to Russian language")
+        main("2")
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    w = LanguageSelectionWindow()
+    w.exit_program.connect(QtWidgets.qApp.quit)
+    w.show()
+    sys.exit(app.exec_())
+v2:
+from PyQt5 import QtCore, QtGui, QtWidgets
+import threading
+from logoped_main import main
+
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(693, 442)
+        self.label = QtWidgets.QLabel(Form)
+        self.label.setGeometry(QtCore.QRect(240, 20, 221, 41))
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(Form)
+        self.label_2.setGeometry(QtCore.QRect(0, 0, 701, 451))
+        self.label_2.setText("")
+        self.label_2.setPixmap(QtGui.QPixmap("Images/Fon.jpg"))
+        self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(Form)
+        self.label_3.setGeometry(QtCore.QRect(220, 80, 251, 51))
+        self.label_3.setObjectName("label_3")
+        self.pushButton = QtWidgets.QPushButton(Form)
+        self.pushButton.setGeometry(QtCore.QRect(280, 150, 121, 23))
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton_2 = QtWidgets.QPushButton(Form)
+        self.pushButton_2.setGeometry(QtCore.QRect(280, 180, 121, 23))
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_3 = QtWidgets.QPushButton(Form)
+        self.pushButton_3.setGeometry(QtCore.QRect(280, 210, 121, 41))
+        self.pushButton_3.setCheckable(False)
+        self.pushButton_3.setObjectName("pushButton_3")
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Программа \'Логопед\'"))
+        self.label.setText(_translate("Form", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#000000;\">Программа &quot;Логопед&quot;</span></p></body></html>"))
+        self.label_3.setText(_translate("Form", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Тілді таңдаңыз/Выберите язык:</span></p></body></html>"))
+        self.pushButton.setText(_translate("Form", "Қазақ тілі"))
+        self.pushButton_2.setText(_translate("Form", "Русский язык"))
+        self.pushButton_3.setText(_translate("Form", "Бағдарламадан шығу\nВыйти из программы"))
+
+class LanguageSelectionWindow(QtWidgets.QWidget, Ui_Form):
+    start_s3_window = QtCore.pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.pushButton.clicked.connect(self.switch_to_kazakh_language)
+        self.pushButton_2.clicked.connect(self.switch_to_russian_language)
+        self.pushButton_3.clicked.connect(QtWidgets.qApp.quit)
+
+    def switch_to_kazakh_language(self):
+        print("Switching to Kazakh language")
+        threading.Thread(target=main, args=("1")).start()
+        self.start_s3_window.emit()
+
+    def switch_to_russian_language(self):
+        print("Switching to Russian language")
+        threading.Thread(target=main, args=("2")).start()
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    w = LanguageSelectionWindow()
+    w.show()
+    sys.exit(app.exec_())

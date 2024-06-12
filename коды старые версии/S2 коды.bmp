@@ -1,0 +1,67 @@
+v1:
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Ui_Form(object):
+    # Определение сигнала для выбора языка и выхода из программы
+    language_selected = QtCore.pyqtSignal(int)
+
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(693, 442)
+        self.label = QtWidgets.QLabel(Form)
+        self.label.setGeometry(QtCore.QRect(240, 20, 221, 41))
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(Form)
+        self.label_2.setGeometry(QtCore.QRect(0, 0, 701, 451))
+        self.label_2.setText("")
+        self.label_2.setPixmap(QtGui.QPixmap("Images/Fon.jpg"))
+        self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(Form)
+        self.label_3.setGeometry(QtCore.QRect(220, 80, 251, 51))
+        self.label_3.setObjectName("label_3")
+        self.pushButton = QtWidgets.QPushButton(Form)
+        self.pushButton.setGeometry(QtCore.QRect(280, 150, 121, 23))
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton_2 = QtWidgets.QPushButton(Form)
+        self.pushButton_2.setGeometry(QtCore.QRect(280, 180, 121, 23))
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_3 = QtWidgets.QPushButton(Form)
+        self.pushButton_3.setGeometry(QtCore.QRect(280, 210, 121, 41))
+        self.pushButton_3.setCheckable(False)
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.label_2.raise_()
+        self.label.raise_()
+        self.label_3.raise_()
+        self.pushButton.raise_()
+        self.pushButton_2.raise_()
+        self.pushButton_3.raise_()
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Программа \'Логопед\'"))
+        self.label.setText(_translate("Form", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#000000;\">Программа &quot;Логопед&quot;</span></p></body></html>"))
+        self.label_3.setText(_translate("Form", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Тілді таңдаңыз/Выберите язык:</span></p></body></html>"))
+        self.pushButton.setText(_translate("Form", "Қазақ тілі"))
+        self.pushButton_2.setText(_translate("Form", "Русский язык"))
+        self.pushButton_3.setText(_translate("Form", "Бағдарламадан шығу\n"
+"Выйти из программы"))
+
+        # Подключение сигналов к методам
+        self.pushButton.clicked.connect(self.select_kazakh_language)
+        self.pushButton_2.clicked.connect(self.select_russian_language)
+        self.pushButton_3.clicked.connect(self.exit_program)
+
+    def select_kazakh_language(self):
+        # Отправка сигнала при выборе казахского языка
+        self.language_selected.emit(1)
+
+    def select_russian_language(self):
+        # Отправка сигнала при выборе русского языка
+        self.language_selected.emit(2)
+
+    def exit_program(self):
+        # Отправка сигнала при выходе из программы
+        self.language_selected.emit(3)

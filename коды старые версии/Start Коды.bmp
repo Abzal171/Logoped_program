@@ -1,0 +1,101 @@
+v1:
+import sys
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QObject, pyqtSignal
+from S2 import Ui_Form  # Импорт класса Ui_Form из файла S2.py
+import main
+
+
+class Worker(QtCore.QObject):
+    finished = QtCore.pyqtSignal()
+
+    def run_main(self):
+        main.main()
+        self.finished.emit()
+
+class Ui_MainWindow(QObject):
+    start_secondary_window = pyqtSignal()
+
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(800, 600)
+
+        # Создаем QLabel для отображения фонового изображения
+        self.background_label = QtWidgets.QLabel(MainWindow)
+        self.background_label.setGeometry(QtCore.QRect(0, 0, 800, 600))
+        pixmap = QtGui.QPixmap('C:/Users/Public/Downloads/Diplon/Images/Fon.jpg')  # Путь к изображению
+        self.background_label.setPixmap(pixmap)
+
+        # Создаем центральный виджет и размещаем его поверх фонового изображения
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setGeometry(QtCore.QRect(0, 0, 800, 600))
+
+        self.label1 = QtWidgets.QLabel(self.centralwidget)
+        self.label1.setGeometry(QtCore.QRect(180, 50, 411, 41))
+        self.label1.setLocale(QtCore.QLocale(QtCore.QLocale.Russian, QtCore.QLocale.Kazakhstan))
+        self.label1.setTextFormat(QtCore.Qt.AutoText)
+        self.label1.setAlignment(QtCore.Qt.AlignCenter)
+        self.label1.setObjectName("label1")
+
+        self.Button1 = QtWidgets.QPushButton(self.centralwidget)
+        self.Button1.setGeometry(QtCore.QRect(320, 120, 111, 23))
+        self.Button1.setObjectName("Button1")
+
+        self.Button2 = QtWidgets.QPushButton(self.centralwidget)
+        self.Button2.setGeometry(QtCore.QRect(320, 160, 111, 23))
+        self.Button2.setObjectName("Button2")
+
+        MainWindow.setCentralWidget(self.centralwidget)
+
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+
+        self.Button1.clicked.connect(self.open_secondary_window)  # Изменено на вызов функции открытия окна S2.py
+        self.Button2.clicked.connect(self.exit_program)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        # Устанавливаем заголовок главного окна
+        MainWindow.setWindowTitle("Программа 'Логопед'")
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label1.setText(_translate("MainWindow",
+                                       "<html><head/><body><p><span style=\" font-size:14pt;\">Добро пожаловать в программу Логопед!</span></p></body></html>"))
+        self.Button1.setText(_translate("MainWindow", "Запустить"))
+        self.Button2.setText(_translate("MainWindow", "Выйти из программы"))
+
+    def open_secondary_window(self):
+        self.start_secondary_window.emit()
+
+    def exit_program(self):
+        QtWidgets.qApp.closeAllWindows()
+
+
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.ui.start_secondary_window.connect(self.open_secondary_window)
+
+    def open_secondary_window(self):
+        self.secondary_window = QtWidgets.QMainWindow()
+        self.ui = Ui_Form()
+        self.ui.setupUi(self.secondary_window)
+        self.secondary_window.show()
+        self.hide()
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())

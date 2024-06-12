@@ -1,0 +1,1072 @@
+1.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def similar(a, b):
+    # Простой метод сравнения схожести слов (можно заменить на более сложный)
+    return sum([1 for char_a, char_b in zip(a, b) if char_a == char_b]) / max(len(a), len(b))
+
+def main():
+    print("Для запуска программы нажмите Enter.")
+    input()
+
+    print("Каким языком вы говорите?")
+    print("1. Казахский")
+    print("2. Русский")
+    language_choice = input().strip()
+
+    if language_choice == "1":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\kz_small'
+        print("Выбран режим для казахского языка.")
+    elif language_choice == "2":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small'
+        print("Выбран режим для русского языка.")
+    else:
+        print("Некорректный выбор. Завершение программы.")
+        return
+
+    model = Model(model_path)
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Начинается запись и распознавание. Для остановки введите 'остановка'.")
+
+        if language_choice == "1":
+            etalon_words = ['трактор', 'раритет', 'рюрик']
+        elif language_choice == "2":
+            print("Какой дефект речи у вас?")
+            print("1. Ротацизм(картавость)")
+            print("2. Сигматизм(шепелявость)")
+            speech_defect_choice = input().strip()
+            if speech_defect_choice == "1":
+                etalon_words = ['трактор', 'раритет', 'рюрик']  # Замените на свои эталонные слова для картавящих
+                print("Выбран режим для картавящих, говорите.")
+            elif speech_defect_choice == "2":
+                etalon_words = ['слово4', 'слово5', 'слово6']  # Замените на свои эталонные слова для шепелявых
+                print("Выбран режим для шепелявящих, говорите.")
+            else:
+                print("Некорректный выбор. Завершение программы.")
+                return
+
+        similarity_threshold = 0.7  # Пороговое значение для схожести слов
+
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                recognized_text = recognizer.Result()[14:-3]
+                user_words = recognized_text.split()
+
+                for word in user_words:
+                    max_similarity = max([similar(word, etalon_word) for etalon_word in etalon_words])
+                    if max_similarity >= similarity_threshold:
+                        print(f"Слово '{word}' успешно распознано!")
+                    else:
+                        print(f"Слово, не похожее на сравниваемые: '{word}'")
+
+                if "стоп" in recognized_text:
+                    print("Распознано триггерное слово 'стоп'. Завершение программы.")
+                    break
+
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+2.
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+def similar(a, b):
+    # Простой метод сравнения схожести слов (можно заменить на более сложный)
+    return sum([1 for char_a, char_b in zip(a, b) if char_a == char_b]) / max(len(a), len(b))
+
+def main():
+    print("Для запуска программы нажмите Enter.")
+    input()
+
+    print("Тіл/Язык")
+    print("1. Казахский")
+    print("2. Русский")
+    language_choice = input().strip()
+
+    if language_choice == "1":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\kz_small'
+        print("Қазақ тілі режимі таңдалды.")
+    elif language_choice == "2":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small'
+        print("Выбран режим для русского языка.")
+    else:
+        print("Некорректный выбор. Завершение программы.")
+        return
+
+    model = Model(model_path)
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Начинается запись и распознавание. Для остановки скажите 'стоп'.")
+
+        if language_choice == "1":
+            print("Сізде тіл мүкістігінің қандай түрі?")
+            print("1. Ротацизм (картавость)")
+            print("2. Сигматизм (шепелявость)")
+            speech_defect_choice = input().strip()
+            if speech_defect_choice == "1":
+                etalon_words = ['Раушан', 'Қарға', 'Арыстан']  # Замените на свои эталонные слова для картавящих
+                print("Ротацизм режимі таңдалды, айта беріңіз:")
+                print("Осы сөздерді айтып көріңіз", ', '.join(etalon_words))
+
+            elif speech_defect_choice == "2":
+                etalon_words = ['слово4', 'слово5', 'слово6']  # Замените на свои эталонные слова для шепелявых
+                print("Сигматизм режимі таңдалды,айта беріңіз:")
+                print("Осы сөздерді айтып көріңіз", ', '.join(etalon_words))
+            else:
+                print("Тізімнен тыс таңдау.Бағдарлама жабылады.")
+                return
+
+        elif language_choice == "2":
+            print("Какой дефект речи у вас?")
+            print("1. Ротацизм (картавость)")
+            print("2. Сигматизм (шепелявость)")
+            speech_defect_choice = input().strip()
+            if speech_defect_choice == "1":
+                etalon_words = ['трактор', 'раритет', 'рюрик']  # Замените на свои эталонные слова для картавящих
+                print("Выбран режим для картавящих, говорите.")
+                print("Попробуйте сказать эти слова", ', '.join(etalon_words))
+            elif speech_defect_choice == "2":
+                etalon_words = ['слово4', 'слово5', 'слово6']  # Замените на свои эталонные слова для шепелявых
+                print("Выбран режим для шепелявящих, говорите.")
+                print("Попробуйте сказать эти слова", ', '.join(etalon_words))
+            else:
+                print("Некорректный выбор. Завершение программы.")
+                return
+
+        similarity_threshold = 0.7  # Пороговое значение для схожести слов
+
+        while True:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                recognized_text = recognizer.Result()[14:-3]
+                user_words = recognized_text.split()
+
+                for word in user_words:
+                    max_similarity = max([similar(word, etalon_word) for etalon_word in etalon_words])
+                    if max_similarity >= similarity_threshold:
+                        print(f"Слово '{word}' успешно распознано!")
+                    else:
+                        print(f"Слово, не похожее на сравниваемые: '{word}'")
+
+                if "стоп" in recognized_text:
+                    print("Распознано триггерное слово 'стоп'. Завершение программы.")
+                    break
+
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+3.
+import os
+import json  # Добавлен импорт модуля json для работы с JSON-объектами
+from vosk import Model, KaldiRecognizer
+import pyaudio
+
+
+def similar(a, b):
+    # Простой метод сравнения схожести слов (можно заменить на более сложный)
+    return sum([1 for char_a, char_b in zip(a, b) if char_a == char_b]) / max(len(a), len(b))
+
+
+def handle_error(language_choice, speech_defect_choice):
+    if language_choice == "1":
+        if speech_defect_choice == "1":
+            help_file = r'C:\Users\Public\Downloads\Diplon\lang_help\kz_rotacizm_help.txt'
+        elif speech_defect_choice == "2":
+            help_file = r'C:\Users\Public\Downloads\Diplon\lang_help\kz_sigmatizm_help.txt'
+    elif language_choice == "2":
+        if speech_defect_choice == "1":
+            help_file = r'C:\Users\Public\Downloads\Diplon\lang_help\ru_rotacizm_help.txt'
+        elif speech_defect_choice == "2":
+            help_file = r'C:\Users\Public\Downloads\Diplon\lang_help\ru_sigmatizm_help.txt'
+    else:
+        print("Некорректный выбор. Завершение программы.")
+        return
+
+    try:
+        os.startfile(help_file)
+    except FileNotFoundError:
+        print("Файл с рекомендациями не найден.")
+
+
+def main():
+    print("Для запуска программы нажмите Enter.")
+    input()
+
+    print("Тіл/Язык")
+    print("1. Казахский")
+    print("2. Русский")
+    language_choice = input().strip()
+
+    if language_choice == "1":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\kz_small'
+        print("Қазақ тілі режимі таңдалды.")
+    elif language_choice == "2":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small'
+        print("Выбран режим для русского языка.")
+    else:
+        print("Некорректный выбор. Завершение программы.")
+        return
+
+    model = Model(model_path)
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Начинается запись и распознавание. Для остановки скажите 'стоп'.")
+
+        if language_choice == "1":
+            print("Сізде тіл мүкістігінің қандай түрі?")
+            print("1. Ротацизм (картавость)")
+            print("2. Сигматизм (шепелявость)")
+            speech_defect_choice = input().strip()
+            if speech_defect_choice == "1":
+                etalon_words = ['Раушан', 'Қарға', 'Арыстан']  # Замените на свои эталонные слова для картавящих
+                print("Ротацизм режимі таңдалды, айта беріңіз:")
+                print("Осы сөздерді айтып көріңіз", ', '.join(etalon_words))
+
+            elif speech_defect_choice == "2":
+                etalon_words = ['сәуле', 'сақина', 'әшекей']  # Замените на свои эталонные слова для шепелявых
+                print("Сигматизм режимі таңдалды,айта беріңіз:")
+                print("Осы сөздерді айтып көріңіз", ', '.join(etalon_words))
+            else:
+                print("Тізімнен тыс таңдау.Бағдарлама жабылады.")
+                return
+
+        elif language_choice == "2":
+            print("Какой дефект речи у вас?")
+            print("1. Ротацизм (картавость)")
+            print("2. Сигматизм (шепелявость)")
+            speech_defect_choice = input().strip()
+            if speech_defect_choice == "1":
+                etalon_words = ['трактор', 'раритет', 'рюрик']  # Замените на свои эталонные слова для картавящих
+                print("Выбран режим для картавящих, говорите.")
+                print("Попробуйте сказать эти слова", ', '.join(etalon_words))
+            elif speech_defect_choice == "2":
+                etalon_words = ['шла Саша', 'Шоссе', 'Шершавый']  # Замените на свои эталонные слова для шепелявых
+                print("Выбран режим для шепелявящих, говорите.")
+                print("Попробуйте сказать эти слова", ', '.join(etalon_words))
+            else:
+                print("Некорректный выбор. Завершение программы.")
+                return
+
+        similarity_threshold = 0.7  # Пороговое значение для схожести слов
+
+        attempts = 0
+        max_attempts = 4
+
+        while attempts < max_attempts:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                result = json.loads(recognizer.Result())  # Преобразование строки в JSON-объект
+                recognized_text = result["text"]  # Извлечение текста из JSON-объекта
+                user_words = recognized_text.split()
+
+                correct_count = 0
+                for word in user_words:
+                    word = word.strip('"')  # Убираем кавычки вокруг слова
+                    max_similarity = max([similar(word, etalon_word) for etalon_word in etalon_words])
+                    if max_similarity >= similarity_threshold:
+                        correct_count += 1
+                        print(f"Слово '{word}' успешно распознано!")
+                    else:
+                        print(f"Слово, не похожее на сравниваемые: '{word}'")
+
+                if correct_count == len(etalon_words):
+                    break
+                else:
+                    attempts += 1
+                    if attempts == max_attempts:
+                        print("Вы не смогли произнести правильно все слова. Попробуйте:")
+                        print("1. Попробовать снова")
+                        print("2. Получить рекомендацию")
+                        choice = input()
+                        if choice == "2":
+                            handle_error(language_choice, speech_defect_choice)
+                            break  # Добавлено прерывание цикла после получения рекомендаций
+
+        else:
+            print("Вы не смогли произнести правильно все слова. Попробуйте:")
+            print("1. Попробовать снова")
+            print("2. Получить рекомендацию")
+            choice = input()
+            if choice == "2":
+                handle_error(language_choice, speech_defect_choice)
+
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+
+if __name__ == "__main__":
+    main()
+4.
+import os
+import json
+import pyaudio
+from vosk import Model, KaldiRecognizer
+
+def similar(a, b):
+    return sum([1 for char_a, char_b in zip(a, b) if char_a == char_b]) / max(len(a), len(b))
+
+def handle_error(language_choice, speech_defect_choice):
+    LANG_HELP_DIR = r'C:\Users\Public\Downloads\Diplon\lang_help'
+    help_files = {
+        "1": {
+            "1": os.path.join(LANG_HELP_DIR, 'kz_rotacizm_help.txt'),
+            "2": os.path.join(LANG_HELP_DIR, 'kz_sigmatizm_help.txt')
+        },
+        "2": {
+            "1": os.path.join(LANG_HELP_DIR, 'ru_rotacizm_help.txt'),
+            "2": os.path.join(LANG_HELP_DIR, 'ru_sigmatizm_help.txt')
+        }
+    }
+
+    help_file = help_files.get(language_choice, {}).get(speech_defect_choice)
+    if help_file:
+        try:
+            os.startfile(help_file)
+        except FileNotFoundError:
+            print("Файл с рекомендациями не найден.")
+    else:
+        print("Некорректный выбор. Завершение программы.")
+
+def main():
+    print("Для запуска программы нажмите Enter.")
+    input()
+
+    print("Тіл/Язык")
+    print("1. Казахский")
+    print("2. Русский")
+    language_choice = input().strip()
+
+    if language_choice == "1":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\kz_small'
+        print("Қазақ тілі режимі таңдалды.")
+    elif language_choice == "2":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small'
+        print("Выбран режим для русского языка.")
+    else:
+        print("Некорректный выбор. Завершение программы.")
+        return
+
+    model = Model(model_path)
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Начинается запись и распознавание. Для остановки скажите 'стоп'.")
+
+        print("Сізде тіл мүкістігінің қандай түрі?" if language_choice == "1" else "Какой дефект речи у вас?")
+        print("1. Ротацизм (картавость)")
+        print("2. Сигматизм (шепелявость)")
+        speech_defect_choice = input().strip()
+
+        etalon_words = []
+        if language_choice == "1":
+            etalon_words = ['Раушан', 'Қарға', 'Арыстан'] if speech_defect_choice == "1" else ['сәуле', 'сақина', 'әшекей']
+        elif language_choice == "2":
+            etalon_words = ['трактор', 'раритет', 'рюрик'] if speech_defect_choice == "1" else ['шла Саша', 'Шоссе', 'Шершавый']
+        else:
+            print("Некорректный выбор. Завершение программы.")
+            return
+
+        print("Ротацизм режимі таңдалды, айта беріңіз:" if language_choice == "1" else "Выбран режим для картавящих, говорите.")
+        print("Осы сөздерді айтып көріңіз", ', '.join(etalon_words))
+
+        similarity_threshold = 0.7
+        attempts = 0
+        max_attempts = 4
+
+        while attempts < max_attempts:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                result = json.loads(recognizer.Result())
+                recognized_text = result["text"]
+                user_words = recognized_text.split()
+
+                correct_count = 0
+                for word in user_words:
+                    word = word.strip('"')
+                    max_similarity = max([similar(word, etalon_word) for etalon_word in etalon_words])
+                    if max_similarity >= similarity_threshold:
+                        correct_count += 1
+                        print(f"Слово '{word}' успешно распознано!")
+                    else:
+                        print(f"Слово, не похожее на сравниваемые: '{word}'")
+
+                if correct_count == len(etalon_words):
+                    break
+                else:
+                    attempts += 1
+                    if attempts == max_attempts:
+                        print("Вы не смогли произнести правильно все слова. Попробуйте:")
+                        print("1. Попробовать снова")
+                        print("2. Получить рекомендацию")
+                        choice = input()
+                        if choice == "2":
+                            handle_error(language_choice, speech_defect_choice)
+                            break
+
+        else:
+            print("Вы не смогли произнести правильно все слова. Попробуйте:")
+            print("1. Попробовать снова")
+            print("2. Получить рекомендацию")
+            choice = input()
+            if choice == "2":
+                handle_error(language_choice, speech_defect_choice)
+
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+5.
+import os
+import json
+import pyaudio
+from vosk import Model, KaldiRecognizer
+
+def similar(a, b):
+    return sum([1 for char_a, char_b in zip(a, b) if char_a == char_b]) / max(len(a), len(b))
+
+def handle_error(language_choice, speech_defect_choice):
+    LANG_HELP_DIR = r'C:\Users\Public\Downloads\Diplon\lang_help'
+    help_files = {
+        "1": {
+            "1": os.path.join(LANG_HELP_DIR, 'kz_rotacizm_help.txt'),
+            "2": os.path.join(LANG_HELP_DIR, 'kz_sigmatizm_help.txt')
+        },
+        "2": {
+            "1": os.path.join(LANG_HELP_DIR, 'ru_rotacizm_help.txt'),
+            "2": os.path.join(LANG_HELP_DIR, 'ru_sigmatizm_help.txt')
+        }
+    }
+
+    help_file = help_files.get(language_choice, {}).get(speech_defect_choice)
+    if help_file:
+        try:
+            os.startfile(help_file)
+        except FileNotFoundError:
+            print("Файл с рекомендациями не найден.")
+    else:
+        print("Некорректный выбор. Завершение программы.")
+
+def main():
+    print("Для запуска программы нажмите Enter.")
+    input()
+
+    print("Тіл/Язык")
+    print("1. Казахский")
+    print("2. Русский")
+    language_choice = input().strip()
+
+    if language_choice == "1":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\kz_small'
+        print("Қазақ тілі режимі таңдалды.")
+    elif language_choice == "2":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small'
+        print("Выбран режим для русского языка.")
+    else:
+        print("Тізімнен тыс таңдау/Некорректный выбор. Завершение программы.")
+        return
+
+    model = Model(model_path)
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Начинается распознавание. Для остановки скажите 'стоп'." if language_choice == "2" else "Распознавание басталды. Тоқтату үшін 'стоп' деп айтыңыз.")
+
+        print("Сізде тіл мүкістігінің қандай түрі?" if language_choice == "1" else "Какой дефект речи у вас?")
+        print("1. Ротацизм (картавость)")
+        print("2. Сигматизм (шепелявость)")
+        speech_defect_choice = input().strip()
+
+        etalon_words = []
+        if language_choice == "1":
+            etalon_words = ['Раушан', 'Қарға', 'Арыстан'] if speech_defect_choice == "1" else ['сәуле', 'сақина', 'әшекей']
+        elif language_choice == "2":
+            etalon_words = ['трактор', 'раритет', 'рюрик'] if speech_defect_choice == "1" else ['шла Саша', 'Шоссе', 'Шершавый']
+        else:
+            print("Некорректный выбор. Завершение программы.")
+            return
+
+        print("Ротацизм режимі таңдалды, айта беріңіз:" if language_choice == "1" else "Выбран режим для картавящих, говорите.")
+        print("Осы сөздерді айтып көріңіз", ', '.join(etalon_words))
+
+        similarity_threshold = 0.7
+        attempts = 0
+        max_attempts = 4
+
+        while attempts < max_attempts:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                result = json.loads(recognizer.Result())
+                recognized_text = result["text"]
+                user_words = recognized_text.split()
+
+                correct_count = 0
+                for word in user_words:
+                    word = word.strip('"')
+                    max_similarity = max([similar(word, etalon_word) for etalon_word in etalon_words])
+                    if max_similarity >= similarity_threshold:
+                        correct_count += 1
+                        if language_choice == "1":
+                            print(f"Сөз '{word}' сәтті анықталды!")
+                        else:
+                            print(f"Слово '{word}' успешно распознано!")
+                    else:
+                        if language_choice == "1":
+                            print(f"Сөз, салыстырулған сөздермен сәйкес келмейді: '{word}'")
+                        else:
+                            print(f"Слово, не похожее на сравниваемые: '{word}'")
+
+                if correct_count == len(etalon_words):
+                    break
+                else:
+                    attempts += 1
+                    if attempts == max_attempts:
+                        print("Вы не смогли произнести правильно все слова. Попробуйте:" if language_choice == "2" else "Сіз көрсетілген сөздерді айта алмадыңыз.Келесіден таңдаңыз:")
+                        print("1. Попробовать снова" if language_choice == "2" else "1. Қайтадан айтып көру")
+                        print("2. Получить рекомендацию" if language_choice == "2" else "2. Анықтама алу")
+                        choice = input()
+                        if choice == "2":
+                            handle_error(language_choice, speech_defect_choice)
+                            break
+
+        else:
+            print("Вы не смогли произнести правильно все слова. Попробуйте:" if language_choice == "2" else "Сіз көрсетілген сөздерді айта алмадыңыз.Келесіден таңдаңыз:")
+            print("1. Попробовать снова" if language_choice == "2" else "1. Қайтадан айтып көру")
+            print("2. Получить рекомендацию" if language_choice == "2" else "2. Анықтама алу")
+            choice = input()
+            if choice == "2":
+                handle_error(language_choice, speech_defect_choice)
+
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+6.
+import os
+import json
+import pyaudio
+from vosk import Model, KaldiRecognizer
+from gtts import gTTS
+
+def similar(a, b):
+    return sum([1 for char_a, char_b in zip(a, b) if char_a == char_b]) / max(len(a), len(b))
+
+def handle_error(language_choice, speech_defect_choice):
+    LANG_HELP_DIR = r'C:\Users\Public\Downloads\Diplon\lang_help'
+    help_files = {
+        "1": {
+            "1": os.path.join(LANG_HELP_DIR, 'kz_rotacizm_help.txt'),
+            "2": os.path.join(LANG_HELP_DIR, 'kz_sigmatizm_help.txt')
+        },
+        "2": {
+            "1": os.path.join(LANG_HELP_DIR, 'ru_rotacizm_help.txt'),
+            "2": os.path.join(LANG_HELP_DIR, 'ru_sigmatizm_help.txt')
+        }
+    }
+
+    help_file = help_files.get(language_choice, {}).get(speech_defect_choice)
+    if help_file:
+        try:
+            os.startfile(help_file)
+        except FileNotFoundError:
+            print("Файл с рекомендациями не найден.")
+    else:
+        print("Некорректный выбор. Завершение программы.")
+
+def main():
+    print("Для запуска программы нажмите Enter.")
+    input()
+
+    print("Тіл/Язык")
+    print("1. Казахский")
+    print("2. Русский")
+    language_choice = input().strip()
+
+    if language_choice == "1":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\kz_small'
+        print("Қазақ тілі режимі таңдалды.")
+    elif language_choice == "2":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small'
+        print("Выбран режим для русского языка.")
+    else:
+        print("Тізімнен тыс таңдау/Некорректный выбор. Завершение программы.")
+        return
+
+    model = Model(model_path)
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Начинается распознавание. Для остановки скажите 'стоп'." if language_choice == "2" else "Распознавание басталды. Тоқтату үшін 'стоп' деп айтыңыз.")
+
+        print("Сізде тіл мүкістігінің қандай түрі?" if language_choice == "1" else "Какой дефект речи у вас?")
+        print("1. Ротацизм (картавость)")
+        print("2. Сигматизм (шепелявость)")
+        speech_defect_choice = input().strip()
+
+        etalon_words = []
+        if language_choice == "1":
+            etalon_words = ['Раушан', 'Қарға', 'Арыстан'] if speech_defect_choice == "1" else ['сәуле', 'сақина', 'әшекей']
+        elif language_choice == "2":
+            etalon_words = ['трактор', 'раритет', ' Рулет'] if speech_defect_choice == "1" else ['Саша', 'Шоссе', 'Шершавый']
+        else:
+            print("Некорректный выбор. Завершение программы.")
+            return
+
+        print("Ротацизм режимі таңдалды, айта беріңіз:" if language_choice == "1" else "Выбран режим для картавящих, говорите.")
+        print("Осы сөздерді айтып көріңіз", ', '.join(etalon_words))
+
+        # Создаем аудиофайл со всеми эталонными словами
+        tts = gTTS(text=' '.join(etalon_words), lang='ru')
+        tts.save("etalon_words.mp3")
+
+        # Проигрываем аудиофайл с эталонными словами
+        os.system("start etalon_words.mp3")
+
+        similarity_threshold = 0.7
+        attempts = 0
+        max_attempts = 4
+
+        while attempts < max_attempts:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                result = json.loads(recognizer.Result())
+                recognized_text = result["text"]
+                user_words = recognized_text.split()
+
+                correct_count = 0
+                for word in user_words:
+                    word = word.strip('"')
+                    max_similarity = max([similar(word, etalon_word) for etalon_word in etalon_words])
+                    if max_similarity >= similarity_threshold:
+                        correct_count += 1
+                        if language_choice == "1":
+                            print(f"Сөз '{word}' сәтті анықталды!")
+                        else:
+                            print(f"Слово '{word}' успешно распознано!")
+                    else:
+                        if language_choice == "1":
+                            print(f"Сөз, салыстырулған сөздермен сәйкес келмейді: '{word}'")
+                        else:
+                            print(f"Слово, не похожее на сравниваемые: '{word}'")
+
+                if correct_count == len(etalon_words):
+                    break
+                else:
+                    attempts += 1
+                    if attempts == max_attempts:
+                        print("Вы не смогли произнести правильно все слова. Попробуйте:" if language_choice == "2" else "Сіз көрсетілген сөздерді айта алмадыңыз.Келесіден таңдаңыз:")
+                        print("1. Попробовать снова" if language_choice == "2" else "1. Қайтадан айтып көру")
+                        print("2. Получить рекомендацию" if language_choice == "2" else "2. Анықтама алу")
+                        choice = input()
+                        if choice == "2":
+                            handle_error(language_choice, speech_defect_choice)
+                            break
+
+        else:
+            print("Вы не смогли произнести правильно все слова. Попробуйте:" if language_choice == "2" else "Сіз көрсетілген сөздерді айта алмадыңыз.Келесіден таңдаңыз:")
+            print("1. Попробовать снова" if language_choice == "2" else "1. Қайтадан айтып көру")
+            print("2. Получить рекомендацию" if language_choice == "2" else "2. Анықтама алу")
+            choice = input()
+            if choice == "2":
+                handle_error(language_choice, speech_defect_choice)
+
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+7.
+import os
+import json
+import pyaudio
+import requests
+from vosk import Model, KaldiRecognizer
+from gtts import gTTS
+
+# Функция для проверки доступности интернета
+def check_internet():
+    try:
+        requests.get("http://www.google.com", timeout=3)
+        return True
+    except requests.ConnectionError:
+        return False
+
+internet_access = check_internet()
+
+def similar(a, b):
+    return sum([1 for char_a, char_b in zip(a, b) if char_a == char_b]) / max(len(a), len(b))
+
+def handle_error(language_choice, speech_defect_choice):
+    LANG_HELP_DIR = r'C:\Users\Public\Downloads\Diplon\lang_help'
+    help_files = {
+        "1": {
+            "1": os.path.join(LANG_HELP_DIR, 'kz_rotacizm_help.txt'),
+            "2": os.path.join(LANG_HELP_DIR, 'kz_sigmatizm_help.txt')
+        },
+        "2": {
+            "1": os.path.join(LANG_HELP_DIR, 'ru_rotacizm_help.txt'),
+            "2": os.path.join(LANG_HELP_DIR, 'ru_sigmatizm_help.txt')
+        }
+    }
+
+    help_file = help_files.get(language_choice, {}).get(speech_defect_choice)
+    if help_file:
+        try:
+            os.startfile(help_file)
+        except FileNotFoundError:
+            print("Файл с рекомендациями не найден.")
+    else:
+        print("Некорректный выбор. Завершение программы.")
+
+def main():
+    print("Для запуска программы нажмите Enter.")
+    input()
+
+    print("Тіл/Язык")
+    print("1. Казахский")
+    print("2. Русский")
+    language_choice = input().strip()
+
+    if language_choice == "1":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\kz_small'
+        print("Қазақ тілі режимі таңдалды.")
+    elif language_choice == "2":
+        model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small'
+        print("Выбран режим для русского языка.")
+    else:
+        print("Тізімнен тыс таңдау/Некорректный выбор. Завершение программы.")
+        return
+
+    model = Model(model_path)
+    recognizer = KaldiRecognizer(model, 16000)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+    stream.start_stream()
+
+    try:
+        print("Начинается распознавание. Для остановки скажите 'стоп'." if language_choice == "2" else "Распознавание басталды. Тоқтату үшін 'стоп' деп айтыңыз.")
+
+        print("Сізде тіл мүкістігінің қандай түрі?" if language_choice == "1" else "Какой дефект речи у вас?")
+        print("1. Ротацизм (картавость)")
+        print("2. Сигматизм (шепелявость)")
+        speech_defect_choice = input().strip()
+
+        etalon_words = []
+        if language_choice == "1":
+            etalon_words = ['Раушан', 'Қарға', 'Арыстан'] if speech_defect_choice == "1" else ['сәуле', 'сақина', 'әшекей']
+        elif language_choice == "2":
+            etalon_words = ['трактор', 'раритет', ' рулет'] if speech_defect_choice == "1" else ['Саша', 'Шоссе', 'Шершавый']
+        else:
+            print("Некорректный выбор. Завершение программы.")
+            return
+
+        print("Ротацизм режимі таңдалды, айта беріңіз:" if language_choice == "1" else "Выбран режим для картавящих, говорите.")
+        print("Осы сөздерді айтып көріңіз", ', '.join(etalon_words))
+
+        if internet_access:
+            # Создаем аудиофайл со всеми эталонными словами
+            tts = gTTS(text=' '.join(etalon_words), lang='ru')
+            tts.save("etalon_words.mp3")
+
+            # Проигрываем аудиофайл с эталонными словами
+            os.system("start etalon_words.mp3")
+
+        similarity_threshold = 0.7
+        attempts = 0
+        max_attempts = 4
+
+        while attempts < max_attempts:
+            data = stream.read(4096)
+            if recognizer.AcceptWaveform(data):
+                result = json.loads(recognizer.Result())
+                recognized_text = result["text"]
+                user_words = recognized_text.split()
+
+                correct_count = 0
+                for word in user_words:
+                    word = word.strip('"')
+                    max_similarity = max([similar(word, etalon_word) for etalon_word in etalon_words])
+                    if max_similarity >= similarity_threshold:
+                        correct_count += 1
+                        if language_choice == "1":
+                            print(f"Сөз '{word}' сәтті анықталды!")
+                        else:
+                            print(f"Слово '{word}' успешно распознано!")
+                    else:
+                        if language_choice == "1":
+                            print(f"Сөз, салыстырулған сөздермен сәйкес келмейді: '{word}'")
+                        else:
+                            print(f"Слово, не похожее на сравниваемые: '{word}'")
+
+                if correct_count == len(etalon_words):
+                    break
+                else:
+                    attempts += 1
+                    if attempts == max_attempts:
+                        print("Вы не смогли произнести правильно все слова. Попробуйте:" if language_choice == "2" else "Сіз көрсетілген сөздерді айта алмадыңыз.Келесіден таңдаңыз:")
+                        print("1. Попробовать снова" if language_choice == "2" else "1. Қайтадан айтып көру")
+                        print("2. Получить рекомендацию" if language_choice == "2" else "2. Анықтама алу")
+                        choice = input()
+                        if choice == "2":
+                            handle_error(language_choice, speech_defect_choice)
+                            break
+
+        else:
+            print("Вы не смогли произнести правильно все слова. Попробуйте:" if language_choice == "2" else "Сіз көрсетілген сөздерді айта алмадыңыз.Келесіден таңдаңыз:")
+            print("1. Попробовать снова" if language_choice == "2" else "1. Қайтадан айтып көру")
+            print("2. Получить рекомендацию" if language_choice == "2" else "2. Анықтама алу")
+            choice = input()
+            if choice == "2":
+                handle_error(language_choice, speech_defect_choice)
+
+    except KeyboardInterrupt:
+        print("Запись остановлена пользователем.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+if __name__ == "__main__":
+    main()
+8.
+import os
+import json
+import pyaudio
+from vosk import Model, KaldiRecognizer
+import pyttsx3
+
+# Функция для определения степени схожести двух строк
+def similar(a, b):
+    return sum([1 for char_a, char_b in zip(a, b) if char_a == char_b]) / max(len(a), len(b))
+
+# Загрузка конфигурации из файла
+def load_config():
+    config_file = "config.json"
+    if os.path.exists(config_file):
+        with open(config_file, "r") as f:
+            config = json.load(f)
+        return config
+    else:
+        # Создаем стандартную конфигурацию, если файл не найден
+        return {"similarity_threshold": 0.7, "max_attempts": 4}
+
+# Обработка ошибки и вывод рекомендаций пользователю
+def handle_error(language_choice, speech_defect_choice):
+    LANG_HELP_DIR = r'C:\Users\Public\Downloads\Diplon\lang_help'
+    help_files = {
+        "1": {
+            "1": os.path.join(LANG_HELP_DIR, 'kz_rotacizm_help.txt'),
+            "2": os.path.join(LANG_HELP_DIR, 'kz_sigmatizm_help.txt'),
+            "3": os.path.join(LANG_HELP_DIR, 'kz_lambdacia_help.txt')
+        },
+        "2": {
+            "1": os.path.join(LANG_HELP_DIR, 'ru_rotacizm_help.txt'),
+            "2": os.path.join(LANG_HELP_DIR, 'ru_sigmatizm_help.txt'),
+            "3": os.path.join(LANG_HELP_DIR, 'ru_lambdacia_help.txt')
+        }
+    }
+
+    help_file = help_files.get(language_choice, {}).get(speech_defect_choice)
+    if help_file:
+        try:
+            os.startfile(help_file)
+        except FileNotFoundError:
+            print("Файл с рекомендациями не найден.")
+    else:
+        print("Некорректный выбор. Завершение программы.")
+
+# Сохранение результатов распознавания в файл
+def save_recognition_result_to_file(language, defect, recognized_text):
+    with open('Save_words.txt', 'a', encoding='utf-8') as file:
+        file.write(f"Language: {language}, Defect: {defect}, Recognized Text: {recognized_text}\n")
+
+
+def main():
+    while True:
+        print("Для запуска программы нажмите Enter.")
+        input()
+
+        print("Тіл/Язык")
+        print("1. Қазақ тілі")
+        print("2. Русский")
+        print("3. Бағдарламадан шығу/Выйти из программы")
+        language_choice = input().strip()
+
+        if language_choice == "3":
+            print("Завершение программы.")
+            break
+
+        if language_choice == "1":
+            model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\kz_small'
+            print("Қазақ тілі режимі таңдалды.")
+        elif language_choice == "2":
+            model_path = r'C:\Users\Public\Downloads\Diplon\lang_model\ru_small'
+            print("Выбран режим для русского языка.")
+        else:
+            print("Тізімнен тыс таңдау/Некорректный выбор. Повторите попытку.")
+            continue
+
+        model = Model(model_path)
+        recognizer = KaldiRecognizer(model, 16000)
+        mic = pyaudio.PyAudio()
+        stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+        stream.start_stream()
+
+        config = load_config()
+
+        try:
+            print("Начинается распознавание. Для остановки скажите 'стоп'." if language_choice == "2" else "Распознавание басталды. Тоқтату үшін 'стоп' деп айтыңыз.")
+            try_again = True  # Флаг для управления повторными попытками
+
+            while try_again:  # Бесконечный цикл для повторного выбора языка или завершения программы
+                print("Сізде тіл мүкістігінің қандай түрі?" if language_choice == "1" else "Какой дефект речи у вас?")
+                print("1. Ротацизм (картавость)" if language_choice == "2" else "1.Ротацизм(Р әрпін айта алмау)")
+                print("2. Сигматизм (шепелявость)" if language_choice == "2" else "2.Сигмацизм(Ш немесе Ж әрпін айта алмау)")
+                print("3. Ламбдация (проблема с произношением буквы 'л')" if language_choice == "2" else "3.Ламбдация(Л әрпін айта алмау)")
+                print("4. Вернуться к выбору языка")
+                speech_defect_choice = input().strip()
+
+                if speech_defect_choice == "4":
+                    try_again = False  # Выход из цикла, возврат к выбору языка
+                    continue
+
+                etalon_words = []
+                if language_choice == "1":
+                    if speech_defect_choice == "1":
+                        etalon_words = ['Раушан', 'Картоп', 'Арпа']
+                    elif speech_defect_choice == "2":
+                        etalon_words = ['Шипа', 'Шалқар', 'Жарқын']
+                    elif speech_defect_choice == "3":
+                        etalon_words = ['Бала', 'Алмұрт', 'Шалбар',]
+                elif language_choice == "2":
+                    if speech_defect_choice == "1":
+                        etalon_words = ['Трактор', 'Раритет', 'Рулет']
+                    elif speech_defect_choice == "2":
+                        etalon_words = ['Саша', 'Шоссе', 'Шершавый']
+                    elif speech_defect_choice == "3":
+                        etalon_words = ['Мелочь', 'Лист', 'Капля']
+                else:
+                    print("Некорректный выбор. Повторите попытку.")
+                    continue
+
+                print("Режим выбран, произнесите слова:" if language_choice == "1" else "Выбран режим, произнесите слова:")
+                print("Осы сөздерді айтып көріңіз", ', '.join(etalon_words))
+
+                engine = pyttsx3.init()
+                for word in etalon_words:
+                    engine.say(word)
+                    engine.runAndWait()
+
+                similarity_threshold = config["similarity_threshold"]
+                max_attempts = config["max_attempts"]
+                attempts = 0
+
+                while attempts < max_attempts:
+                    data = stream.read(4096)
+                    if recognizer.AcceptWaveform(data):
+                        result = json.loads(recognizer.Result())
+                        recognized_text = result["text"]
+                        user_words = recognized_text.split()
+
+                        correct_count = 0
+                        for word in user_words:
+                            word = word.strip('"')
+                            max_similarity = max([similar(word, etalon_word) for etalon_word in etalon_words])
+                            if max_similarity >= similarity_threshold:
+                                correct_count += 1
+                                if language_choice == "1":
+                                    print(f"Сөз '{word}' сәтті анықталды!")
+                                else:
+                                    print(f"Слово '{word}' успешно распознано!")
+                            else:
+                                if language_choice == "1":
+                                    print(f"Сөз, салыстырылған сөздермен сәйкес келмейді: '{word}'")
+                                else:
+                                    print(f"Слово, не похожее на сравниваемые: '{word}'")
+
+                        if correct_count == len(etalon_words):
+                            save_recognition_result_to_file(language_choice, speech_defect_choice, recognized_text)
+                            break
+                        else:
+                            attempts += 1
+                            if attempts == max_attempts:
+                                print(
+                                    "Вы не смогли произнести правильно все слова. Попробуйте:" if language_choice == "2" else "Сіз көрсетілген сөздерді айта алмадыңыз.Келесіден таңдаңыз:")
+                                print("1. Попробовать снова" if language_choice == "2" else "1. Қайтадан айтып көру")
+                                print("2. Получить рекомендацию" if language_choice == "2" else "2. Анықтама алу")
+                                print("3. Тілді қайтадан таңдау/Вернуться к выбору языка")
+                                choice = input()
+                                if choice == "2":
+                                    handle_error(language_choice, speech_defect_choice)
+                                    break
+                                elif choice == "3":
+                                    break
+                                elif choice == "1":
+                                    # Обновление переменных для повторной попытки
+                                    speech_defect_choice = None
+                                    etalon_words = []
+
+
+        except KeyboardInterrupt:
+            print("Запись остановлена пользователем.")
+        finally:
+            stream.stop_stream()
+            stream.close()
+            mic.terminate()
+
+if __name__ == "__main__":
+    main()
+9.

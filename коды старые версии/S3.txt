@@ -1,0 +1,160 @@
+v1:
+from PyQt5 import QtCore, QtGui, QtWidgets
+from language_selection_window import LanguageSelectionWindow
+
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(693, 442)
+        self.label_2 = QtWidgets.QLabel(Form)
+        self.label_2.setGeometry(QtCore.QRect(0, 0, 701, 451))
+        self.label_2.setText("")
+        self.label_2.setPixmap(QtGui.QPixmap("Images/Fon.jpg"))
+        self.label_2.setObjectName("label_2")
+        self.label = QtWidgets.QLabel(Form)
+        self.label.setGeometry(QtCore.QRect(120, 30, 451, 71))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label.setFont(font)
+        self.label.setObjectName("label")
+        self.pushButton = QtWidgets.QPushButton(Form)
+        self.pushButton.setGeometry(QtCore.QRect(150, 120, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton.setFont(font)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton_2 = QtWidgets.QPushButton(Form)
+        self.pushButton_2.setGeometry(QtCore.QRect(350, 120, 171, 41))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_2.setFont(font)
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_3 = QtWidgets.QPushButton(Form)
+        self.pushButton_3.setGeometry(QtCore.QRect(150, 170, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_3.setFont(font)
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_4 = QtWidgets.QPushButton(Form)
+        self.pushButton_4.setGeometry(QtCore.QRect(350, 170, 171, 41))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_4.setFont(font)
+        self.pushButton_4.setObjectName("pushButton_4")
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Программа \'Логопед\'"))
+        self.label.setText(_translate("Form", "<html><head/><body><p align=\"center\">Тану басталды. Сізде тіл мүкістігінің қандай түрі?</p><p align=\"center\">Таңдағаннан кейін,тоқтату үшін \'стоп\' деп айтыңыз.</p></body></html>"))
+        self.pushButton.setText(_translate("Form", "Ротацизм\n"
+"(Р әрпін айта алмау)"))
+        self.pushButton_2.setText(_translate("Form", "Сигмацизм\n"
+"(Ш не Ж әрпін айта алмау)"))
+        self.pushButton_3.setText(_translate("Form", "Ламбдация\n"
+"(Л әрпін айта алмау)"))
+        self.pushButton_4.setText(_translate("Form", "Тілді қайта таңдау"))
+
+class S3Window(QtWidgets.QWidget, Ui_Form):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_Form()  # Инициализируем Ui_Form из S3.py
+        self.ui.setupUi(self)
+
+        self.ui.pushButton_4.clicked.connect(self.return_to_language_selection)
+
+    def return_to_language_selection(self):
+        self.close()  # Закрываем текущее окно
+        self.open_language_selection_window()  # Открываем окно выбора языка
+
+    def open_language_selection_window(self):
+        self.language_selection_window = LanguageSelectionWindow()
+        self.language_selection_window.show()
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    window = S3Window()  # Используем S3Window вместо Form
+    window.show()
+    sys.exit(app.exec_())
+
+v2:
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(693, 442)
+        self.label_2 = QtWidgets.QLabel(Form)
+        self.label_2.setGeometry(QtCore.QRect(0, 0, 701, 451))
+        self.label_2.setText("")
+        self.label_2.setPixmap(QtGui.QPixmap("Images/Fon.jpg"))
+        self.label_2.setObjectName("label_2")
+        self.label = QtWidgets.QLabel(Form)
+        self.label.setGeometry(QtCore.QRect(120, 30, 451, 71))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label.setFont(font)
+        self.label.setObjectName("label")
+        self.pushButton = QtWidgets.QPushButton(Form)
+        self.pushButton.setGeometry(QtCore.QRect(150, 120, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton.setFont(font)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton_2 = QtWidgets.QPushButton(Form)
+        self.pushButton_2.setGeometry(QtCore.QRect(350, 120, 171, 41))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_2.setFont(font)
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_3 = QtWidgets.QPushButton(Form)
+        self.pushButton_3.setGeometry(QtCore.QRect(150, 170, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_3.setFont(font)
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_4 = QtWidgets.QPushButton(Form)
+        self.pushButton_4.setGeometry(QtCore.QRect(350, 170, 171, 41))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_4.setFont(font)
+        self.pushButton_4.setObjectName("pushButton_4")
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Программа \'Логопед\'"))
+        self.label.setText(_translate("Form", "<html><head/><body><p align=\"center\">Тану басталды. Сізде тіл мүкістігінің қандай түрі?</p><p align=\"center\">Таңдағаннан кейін,тоқтату үшін \'стоп\' деп айтыңыз.</p></body></html>"))
+        self.pushButton.setText(_translate("Form", "Ротацизм\n(Р әрпін айта алмау)"))
+        self.pushButton_2.setText(_translate("Form", "Сигмацизм\n(Ш не Ж әрпін айта алмау)"))
+        self.pushButton_3.setText(_translate("Form", "Ламбдация\n(Л әрпін айта алмау)"))
+        self.pushButton_4.setText(_translate("Form", "Тілді қайта таңдау"))
+
+class S3Window(QtWidgets.QWidget, Ui_Form):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_Form()
+        self.ui.setupUi(self)
+
+        self.ui.pushButton_4.clicked.connect(self.return_to_language_selection)
+
+    def return_to_language_selection(self):
+        self.close()
+        self.open_language_selection_window()
+
+    def open_language_selection_window(self):
+        from language_selection_window import LanguageSelectionWindow
+        self.language_selection_window = LanguageSelectionWindow()
+        self.language_selection_window.show()
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    window = S3Window()
+    window.show()
+    sys.exit(app.exec_())

@@ -1,0 +1,214 @@
+v1:
+import sys
+from PyQt5 import QtCore, QtGui, QtWidgets
+from language_selection_window import Ui_Form
+from S3 import Ui_Form as Ui_S3  # Импорт Ui_S3Window из S3.py
+from logoped_main import main
+import threading
+
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.ui.start_secondary_window.connect(self.open_secondary_window)
+
+    def open_secondary_window(self):
+        self.secondary_window = LanguageSelectionWindow()
+        self.secondary_window.start_s3_window.connect(self.open_s3_window)  # Подключаем сигнал к методу
+        self.secondary_window.show()
+        self.hide()
+
+    def open_s3_window(self):
+        print("Opening S3 Window")  # Временное сообщение для отладки
+        self.s3_window = S3Window()
+        self.s3_window.show()
+
+class LanguageSelectionWindow(QtWidgets.QWidget, Ui_Form):
+    start_s3_window = QtCore.pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.pushButton.clicked.connect(lambda: self.switch_to_language("1"))  # Казахский
+        self.pushButton_2.clicked.connect(lambda: self.switch_to_language("2"))  # Русский
+        self.pushButton_3.clicked.connect(QtWidgets.qApp.quit)
+
+    def switch_to_language(self, language_choice):
+        print(f"Switching to language {language_choice}")
+        threading.Thread(target=main, args=(language_choice,)).start()
+
+    def open_s3_window(self):
+        self.s3_window = S3Window()
+        self.s3_window.show()
+
+class S3Window(QtWidgets.QWidget, Ui_S3):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_S3()  # Инициализируем Ui_S3 из S3.py
+        self.ui.setupUi(self)
+
+class Ui_MainWindow(QtCore.QObject):
+    start_secondary_window = QtCore.pyqtSignal()
+
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(800, 600)
+
+        # Создаем QLabel для отображения фонового изображения
+        self.background_label = QtWidgets.QLabel(MainWindow)
+        self.background_label.setGeometry(QtCore.QRect(0, 0, 800, 600))
+        pixmap = QtGui.QPixmap('C:/Users/Public/Downloads/Diplon/Images/Fon.jpg')  # Путь к изображению
+        self.background_label.setPixmap(pixmap)
+
+        # Создаем центральный виджет и размещаем его поверх фонового изображения
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setGeometry(QtCore.QRect(0, 0, 800, 600))
+
+        self.label1 = QtWidgets.QLabel(self.centralwidget)
+        self.label1.setGeometry(QtCore.QRect(180, 50, 411, 41))
+        self.label1.setLocale(QtCore.QLocale(QtCore.QLocale.Russian, QtCore.QLocale.Kazakhstan))
+        self.label1.setTextFormat(QtCore.Qt.AutoText)
+        self.label1.setAlignment(QtCore.Qt.AlignCenter)
+        self.label1.setObjectName("label1")
+
+        self.Button1 = QtWidgets.QPushButton(self.centralwidget)
+        self.Button1.setGeometry(QtCore.QRect(320, 120, 111, 23))
+        self.Button1.setObjectName("Button1")
+
+        self.Button2 = QtWidgets.QPushButton(self.centralwidget)
+        self.Button2.setGeometry(QtCore.QRect(320, 160, 111, 23))
+        self.Button2.setObjectName("Button2")
+
+        MainWindow.setCentralWidget(self.centralwidget)
+
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+
+        self.Button1.clicked.connect(self.open_secondary_window)
+        self.Button2.clicked.connect(self.exit_program)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        # Устанавливаем заголовок главного окна
+        MainWindow.setWindowTitle("Программа 'Логопед'")
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label1.setText(_translate("MainWindow",
+                                       "<html><head/><body><p><span style=\" font-size:14pt;\">Добро пожаловать в программу Логопед!</span></p></body></html>"))
+        self.Button1.setText(_translate("MainWindow", "Запустить"))
+        self.Button2.setText(_translate("MainWindow", "Выйти/Шығу"))
+
+    def open_secondary_window(self):
+        self.start_secondary_window.emit()
+
+    def exit_program(self):
+        QtWidgets.qApp.quit()
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
+v2:
+import sys
+from PyQt5 import QtCore, QtGui, QtWidgets
+from language_selection_window import LanguageSelectionWindow  # Импортируем LanguageSelectionWindow
+import threading
+from logoped_main import main
+
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.ui.start_secondary_window.connect(self.open_secondary_window)
+
+    def open_secondary_window(self):
+        self.secondary_window = LanguageSelectionWindow()
+        self.secondary_window.start_s3_window.connect(self.open_s3_window)
+        self.secondary_window.show()
+        self.hide()
+
+    def open_s3_window(self):
+        print("Opening S3 Window")
+        from S3 import S3Window  # Импортируем S3Window внутри метода
+        self.s3_window = S3Window()
+        self.s3_window.show()
+
+class Ui_MainWindow(QtCore.QObject):
+    start_secondary_window = QtCore.pyqtSignal()
+
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(800, 600)
+
+        self.background_label = QtWidgets.QLabel(MainWindow)
+        self.background_label.setGeometry(QtCore.QRect(0, 0, 800, 600))
+        pixmap = QtGui.QPixmap('C:/Users/Public/Downloads/Diplon/Images/Fon.jpg')
+        self.background_label.setPixmap(pixmap)
+
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setGeometry(QtCore.QRect(0, 0, 800, 600))
+
+        self.label1 = QtWidgets.QLabel(self.centralwidget)
+        self.label1.setGeometry(QtCore.QRect(180, 50, 411, 41))
+        self.label1.setLocale(QtCore.QLocale(QtCore.QLocale.Russian, QtCore.QLocale.Kazakhstan))
+        self.label1.setTextFormat(QtCore.Qt.AutoText)
+        self.label1.setAlignment(QtCore.Qt.AlignCenter)
+        self.label1.setObjectName("label1")
+
+        self.Button1 = QtWidgets.QPushButton(self.centralwidget)
+        self.Button1.setGeometry(QtCore.QRect(320, 120, 111, 23))
+        self.Button1.setObjectName("Button1")
+
+        self.Button2 = QtWidgets.QPushButton(self.centralwidget)
+        self.Button2.setGeometry(QtCore.QRect(320, 160, 111, 23))
+        self.Button2.setObjectName("Button2")
+
+        MainWindow.setCentralWidget(self.centralwidget)
+
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+
+        self.Button1.clicked.connect(self.open_secondary_window)
+        self.Button2.clicked.connect(self.exit_program)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        MainWindow.setWindowTitle("Программа 'Логопед'")
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label1.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:14pt;\">Добро пожаловать в программу Логопед!</span></p></body></html>"))
+        self.Button1.setText(_translate("MainWindow", "Запустить"))
+        self.Button2.setText(_translate("MainWindow", "Выйти/Шығу"))
+
+    def open_secondary_window(self):
+        self.start_secondary_window.emit()
+
+    def exit_program(self):
+        QtWidgets.qApp.quit()
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
